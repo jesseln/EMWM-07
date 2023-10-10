@@ -10,14 +10,12 @@
     </NuxtLink>
     </header>
       <div class="main-navbar">
-          <NuxtLink to="/library-of-libraries" activeClass="nav-active">
-            <div class="dropdown">
+            <div class="dropdown" ref="navDropdown" @mouseover="showModal" @mouseleave="hideModal">
             <h2 class="main-navbar-link dropbtn">Explore the Libraries</h2>
-                <div class="dropdown-content">
-                    <LibraryMenu />
+                <div class="dropdown-content" ref="navDropdownContent" >
+                    <LibraryModal @modalClicked="hideModalClicked" />
                 </div>
             </div>
-          </NuxtLink>
           <NuxtLink to="/your-collection" activeClass="nav-active">
             <div class="dropdown">
                 <h2 class="main-navbar-link dropbtn" >View Your Collection</h2>
@@ -48,26 +46,36 @@
   <script setup>
   //libraryStore call is placed in this layout file as this will initially update the store state from the database for all pages.
   const libraryStore = useLibraryStore();
-  const yourShelfStore = useYourShelfStore();
-  const { parseDatabase } = useViewStore();
 
-  // COMPOPSABLES
-  const { updateCalulatedColumn } = useDatabase();
-  
   libraryStore.getAgents();
   libraryStore.getBooks();
   libraryStore.getMarks();
-  watchEffect(()=>{
-    // parseDatabase(libraryStore.agents)
-    parseDatabase(libraryStore.books)
-    // parseDatabase(libraryStore.marks)
-  })
+
+  const navDropdown = ref(null)
+  const navDropdownContent = ref(null)
+         
+  const showModal = ()=>{
+    navDropdownContent.value.style.transitionDelay = '.1s'
+    navDropdownContent.value.style.visibility = 'visible'
+  }
+
+  const hideModal = ()=>{
+    navDropdownContent.value.style.transitionDelay = '.3s'
+    navDropdownContent.value.style.visibility = 'hidden'
+  }
+
+  const hideModalClicked = ()=> {
+    navDropdownContent.value.style.transitionDelay = '.1s'
+    navDropdownContent.value.style.visibility = 'hidden'
+
+
+}
+
+
 
   </script>
   
   <style scoped>
-
-
 
     .badge{
       position: relative;
