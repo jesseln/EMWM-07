@@ -3,30 +3,32 @@
         <h2 class="menu-title">Select a question to explore the libraries...</h2>
         <div class="menu-page" >
             <div>
-            <div class="index-list">
-                <h3>Agents</h3>   
-                <ul class="library-query">          
-                    <li>How many agents are in the collection?</li>                                   
-                    <li>What years did each agent make their marks?</li>
-                </ul>
+                <div class="index-list">
+                    <h3>Agents</h3>   
+                    <ul class="library-query">
+                        <NuxtLink to="/library/agent01" @click="$emit('modalClicked')" >    
+                            <li>How many agents are in the collection?</li>     
+                        </NuxtLink>                                    
+                        <li>What years did each agent make their marks?</li>
+                    </ul>
+                </div>
+                <div class="index-list">
+                <h3>Books</h3>
+                    <ul class="library-query">  
+                        <li>What kinds of books did people read?</li>
+                        <li>How many books did each agent own?</li>
+                        <li>What years were the books published?</li>
+                    </ul>
+                </div>
+                <div class="index-list">
+                    <h3>Marks</h3>
+                    <ul class="library-query">  
+                        <li>What types of marks did each agent make?</li>
+                        <li>How many marks did each agent make?</li>
+                    </ul>
+                </div>
             </div>
-            <div class="index-list">
-            <h3>Books</h3>
-                <ul class="library-query">  
-                    <li>What kinds of books did people read?</li>
-                    <li>How many books did each agent own?</li>
-                    <li>What years were the books published?</li>
-                </ul>
         </div>
-            <div class="index-list">
-                <h3>Marks</h3>
-                <ul class="library-query">  
-                    <li>What types of marks did each agent make?</li>
-                    <li>How many marks did each agent make?</li>
-                </ul>
-            </div>
-    </div>
-    </div>
     </div>
 </template>
 
@@ -101,27 +103,29 @@
     // padding: 2rem 0 0 0;
     margin: 2rem 0 1rem;
 	color: black;
-	font-family: 'Source Serif 4', serif;
-	font-size: 1.35rem;
+	font-family: 'Source Sans 3', sans-serif;
+	font-size: 1.45rem;
 	font-weight:350;
 	letter-spacing: 0.425rem;;
   }
   
-  .index-list>ul{
+  .index-list ul{
     margin: 0.5rem 0 0 0;
     font-family: 'Raleway', sans-serif;
-	font-size: 0.75rem;
+	font-size: 0.8rem;
 	font-weight: 450;
     letter-spacing: 0.05rem;
     line-height: 1.25rem;
 	color: black;
-    width: 60%;
+    width: 80%;
   }
 
-  .index-list>ul>li{
+  .index-list ul li{
     padding: 0.8rem 0;
-  }
+    text-decoration: none;
+color: black;  }
 
-  .library-query li:hover {background-color: #ebeaea;}
+  .library-query li:hover {background-color: #eeeeee;}
+  .library-query li:focus {background-color: #fdfdfd;}
   
 </style>

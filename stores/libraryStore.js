@@ -4,9 +4,9 @@ export const useLibraryStore = defineStore('library', ()=>{
     const { getTable, getTableTest } = useDatabase();
     
     const items = ref([]); //Genereric Getting in case single table is required only
-    const agents = ref([]);
-    const books = ref([]);
-    const marks = ref([]);
+    const Agent = ref([]);
+    const Book = ref([]);
+    const Mark = ref([]);
     const libraryItemsTest = ref([])
 
     //Generic Getter - Returns single table as specified by tableName and orderColumn
@@ -16,17 +16,17 @@ export const useLibraryStore = defineStore('library', ()=>{
 
     //Returns Agent Structed Object - Relationally nested Marks then nested by Books 
     async function getAgents() {
-      agents.value = await getTable('Agents', 'FemaleAgentID')
+      Agent.value = await getTable('Agents', 'FemaleAgentID')
     }
 
     //Returns Book Structed Object - Relationally nested Marks then nested by Agents
     async function getBooks() {
-      books.value = await getTable('Books', 'BookID')
+      Book.value = await getTable('Books', 'BookID')
     }
 
     //Returns Mark Structed Object - Relationally nested Books and Agents on same level 
     async function getMarks() {
-      marks.value = await getTable('Marks', 'MargID')
+      Mark.value = await getTable('Marks', 'MargID')
     }
 
     //Test Function
@@ -36,5 +36,5 @@ export const useLibraryStore = defineStore('library', ()=>{
   
   
 
-      return {items, agents, books, marks, getItems, getAgents, getBooks, getMarks, getLibraryItemsTest}
+      return {items, Agent, Book, Mark, getItems, getAgents, getBooks, getMarks, getLibraryItemsTest}
   })

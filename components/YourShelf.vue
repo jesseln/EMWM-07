@@ -1,7 +1,7 @@
 <template>
     <div class="shelf yourShelf" >
         <div class="yourShelf-title-box">
-            <h2 class="library-title">Your Collection</h2>
+            <h2  class="library-type-title">Your Collection</h2>
             <p class="yourShelf-description">Items can be added to your collection by selecting them in the library, and clicking Add to Collection.</p>
         </div>
         <div class="shelf-inner">
@@ -15,9 +15,9 @@
                         </div>
                 </div>
                     <div class="section-inner" v-for="item in yourShelf" :key="JSON.stringify(item)" :style="{ height: scales.maxShelfHeight + 'px'}">
-                        <AgentItem v-if="itemTypeCheck(item) === 'Agent'" :item="item" :itemBundle="yourShelfItemBundle.agents"/>
-                        <BookItem v-if="itemTypeCheck(item) === 'Book'" :item="item" :itemBundle="yourShelfItemBundle.books"/>
-                        <MarkItem v-if="itemTypeCheck(item) === 'Mark'" :item="item" :itemBundle="yourShelfItemBundle.marks"/>
+                        <AgentItem v-if="itemTypeCheck(item) === 'Agent'" :item="item" :itemBundle="yourShelfItemBundle.Agent"/>
+                        <BookItem v-if="itemTypeCheck(item) === 'Book'" :item="item" :itemBundle="yourShelfItemBundle.Book"/>
+                        <MarkItem v-if="itemTypeCheck(item) === 'Mark'" :item="item" :itemBundle="yourShelfItemBundle.Mark"/>
                     </div>
             </div>
         </div>

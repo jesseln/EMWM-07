@@ -32,14 +32,14 @@
                 </div>
                 <ul>
                     <li>
-                        <vueper-slides :dragging-distance="70" prevent-y-scroll lazy lazy-load-on-drag>
+                        <!-- <vueper-slides :dragging-distance="70" prevent-y-scroll lazy lazy-load-on-drag>
                             <vueper-slide
                                 v-for="i in 5"
                                 :key="i"
                                 image="https://hmgugjmjfcvjtmrrafjm.supabase.co/storage/v1/object/public/book-images/10/BookID_10_(1_of_6).jpg"
                                 title="slide.title"
                                 content="slide.content" />
-                        </vueper-slides>
+                        </vueper-slides> -->
                         <!-- <div v-if="booksTest">
                             <div v-for="book in booksTest">
                                 <NuxtImg   
@@ -125,8 +125,8 @@ import * as d3 from "d3";
 import FloatingVue from 'floating-vue'
 import 'floating-vue/dist/style.css'
 import { storeToRefs } from "pinia";
-import { VueperSlides, VueperSlide } from 'vueperslides'
-import 'vueperslides/dist/vueperslides.css'
+// import { VueperSlides, VueperSlide } from 'vueperslides'
+// import 'vueperslides/dist/vueperslides.css'
 
 
 const supabase = useSupabaseClient()

@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 export const useViewStore = defineStore('view', ()=>{
-    const { colourMap, colourMapFiltered, scales } = useReferenceStore();
+    const { viewMap, colourMapFiltered, scales } = useReferenceStore();
     const { handleNumeric,
             handleObjectPath,
             handleValue,
@@ -16,21 +16,6 @@ export const useViewStore = defineStore('view', ()=>{
     // LIBRARY STATE OBJECT//
     const libraryData = ref({})
 
-    const formattedLibrary = ref([])
-    
-    //Set-up objects which can be checked for display using 'include' 
-    const colourCategory = {
-        // 'Size': schemePaired,
-        // 'Place of publication': schemePaired,
-        // 'Print or manuscript': ,
-        // 'STC or Wing'schemeDark2
-
-        // schemePaired: ['Size', 'Place of publication'],
-        // schemeDark2: ['Print or manuscript','STC or Wing'],
-        // schemeDark2: ['Print or manuscript','STC or Wing'],
-
-    }
-
     const heightCategory = {
         logarithmic: ['Number of marks', 'Number of book images', 'Size'],
         year: ['Date of publication', 'Female agent date']
@@ -44,17 +29,12 @@ export const useViewStore = defineStore('view', ()=>{
             itemType: "Book",
             id: 'BookID',
             shelf: 'Repository', //Primary sort
-            useShelf: false,
-            showShelf: true,
             bookend: 'Date of publication', //Secondary sort
-            useBookend: false,
-            showBookend: true,
+            shelfOrderMethod: 'A', //Primary sort
+            bookendOrderMethod: 'A', //Secondary sort
             height: 'Date of publication',
-            useHeight: true,
             colour: 'Genre/Identity',
-            useColour: true,
             label: 'Title',
-            useLabel: true,
             agentLabel: 'Female agent name',
             bookLabel: 'Title',
             markLabel: 'Transcription',
@@ -81,8 +61,35 @@ export const useViewStore = defineStore('view', ()=>{
             bookCollectionProp2: 'Book',
             markCollectionProp1: 'Agent',
             markCollectionProp2: 'Book',
+        },
+        pageText: {
+            queryType: 'Agents ',
+            queryBreadcrumb: '/ How many agents are in the collection ?',
+            libraryTypeTitle: 'The Agents',
+            libraryTypeSubtitle: 'of the libraries',
         }
     })
+
+    // LIBRARY DATA //
+    const formattedLibrary = ref([])
+    const itemHeight = ref()
+    const itemColour = ref()
+    const colourSet = ref()
+
+    
+
+    watch([libraryData, libraryDisplay],() => {
+        if(libraryData.value.length !== undefined){
+        formattedLibrary.value =  formatLibrary(libraryData.value); //Reactive when not testing
+        //Item Height - Returns d3 Scale Function
+        itemHeight.value = formatHeight(libraryData.value);
+        //Item Colour - Returns d3 Scale Function
+        itemColour.value = formatColour();
+        //Colour Categories
+        colourSet.value = getColourSet.value //Included here to prevent computed from firing before library.data is returned
+        }
+    })
+
 
     // INTERNAL GETTERS //
     //Get item height bounds
@@ -93,22 +100,11 @@ export const useViewStore = defineStore('view', ()=>{
 
     //Get unique values in colour set
     const getColourSet = computed (() => {
-    return processColourSet(libraryData.value)
+        return processColourSet(libraryData.value)
     })
     
     // EXTERNAL GETTERS //
     //Library Structure
-    watch([libraryData.value, libraryDisplay],() => {
-        formattedLibrary.value =  formatLibrary(libraryData.value, libraryDisplay); //Reactive when not testing
-    })
-    //Item Height - Returns d3 Scale Function
-    const itemHeight =  computed (() => {
-        return formatHeight(libraryData.value, libraryDisplay);
-    })
-    //Item Colour - Returns d3 Scale Function
-    const itemColour =  computed (() => {
-        return formatColour(libraryData.value, libraryDisplay);
-    })
 
     // CREATE VIEW EDITOR //
     const viewHeightBounds = computed (() => {
@@ -140,38 +136,41 @@ export const useViewStore = defineStore('view', ()=>{
         .map(d => [d[0],d3.flatGroup(d3.sort(d[1], d=> getIDP(d, viewMode)), d=> 'All Items')]);  
     }
     //Combine Shelves & Bookend
-    function formatLibrary(data, display) {
+    function formatLibrary(data) {
         //Shelves - Sort & Group Items by Shelf Category
-        const shelfFormatData = display.view.useShelf 
+        const shelfFormatData = libraryDisplay.view.shelf !== "Not Selected"
         ? formatShelf(data, 'shelf') 
         : formatNullShelf(data, 'id'); //Default
         //Bookends - Further Sort & Group Items by Bookend Category
-        const shelfBookendFormatData = display.view.useBookend 
+        const shelfBookendFormatData = libraryDisplay.view.bookend !== "Not Selected"
         ? formatBookend(shelfFormatData, 'bookend') 
         : formatNullBookend(shelfFormatData, 'id'); //Default
         return shelfBookendFormatData
     }
 
     // HANDLE HEIGHT //
-    function formatHeight(data, view) {
+    function formatHeight(data) {
         const viewSelection = libraryDisplay.view.height
-        console.log('heightCategory', heightCategory.logarithmic.includes(viewSelection))
-        //Returns a function which takes the log scale of the input then invokes the d3 scale function (IIFE)
-        if(heightCategory.logarithmic.includes(viewSelection)){
-            return (value)=>{ 
-                return (d3.scaleLinear()
-                            .domain(chooseHeightDomain(data).map(d => Math.log(d))) 
+        if(viewSelection !== "Not Selected") {
+            //Returns a function which takes the log scale of the input then invokes the d3 scale function (IIFE)
+            if(heightCategory.logarithmic.includes(viewSelection)){
+                return (value)=>{ 
+                    return (d3.scaleLinear()
+                                .domain(chooseHeightDomain(data).map(d => Math.log(d))) 
+                                .unknown(scales.maxItemHeight) //Set all non-numeric values to max height
+                                .range([scales.minItemHeight, scales.maxItemHeight])
+                                .clamp(true)
+                            )(Math.log(value)); 
+                }
+            }else{
+                return d3.scaleLinear()
+                            .domain(chooseHeightDomain(data)) 
                             .unknown(scales.maxItemHeight) //Set all non-numeric values to max height
                             .range([scales.minItemHeight, scales.maxItemHeight])
-                            .clamp(true)
-                        )(Math.log(value)); 
+                            .clamp(true);     
             }
         }else{
-            return d3.scaleLinear()
-                        .domain(chooseHeightDomain(data)) 
-                        .unknown(scales.maxItemHeight) //Set all non-numeric values to max height
-                        .range([scales.minItemHeight, scales.maxItemHeight])
-                        .clamp(true);     
+            return (_)=> {return scales.maxItemHeight}
         }
     }
     
@@ -186,58 +185,30 @@ export const useViewStore = defineStore('view', ()=>{
     }
 
     // HANDLE COLOUR //
-    function formatColour(data, view){
-        const viewMode = 'colour'
-        const viewSelection = libraryDisplay.view[viewMode]
-        const viewModeType = libraryDisplay.viewType[viewMode]
-
-        console.log(viewModeType, viewSelection, viewMode)
-
-        const colourFunction = colourMap.get(viewModeType)[viewSelection].func
-        const colourScheme = colourMap.get(viewModeType)[viewSelection].scheme
-        const useLen = colourMap.get(viewModeType)[viewSelection].useLen
-        // if(data.some(d => isNumber(getIDP(d, 'colour')))){
-        //     console.log('Colour Continuous')
-        //     return d3.scaleLinear()
-        //                 .domain(d3
-        //                     .extent(data
-        //                     .filter(d => getIDP(d, 'colour'))
-        //                     .map(d => {
-        //                         return getIDP(d, 'colour')})))
-        //                 .range(['royalblue', 'pink'])
-        //                 .clamp(true)
-        // }
-        const colourScale = colourBandscale(processColourSet(data))
-        console.log('Colour Ordinal')
-        if(true){
-             const colourFunc = d3[colourFunction](d3[colourScheme]) //Domain defaults to [0,1]
+    function formatColour(){
+        if(libraryDisplay.view.colour !== "Not Selected"){
+            const viewMode = 'colour'
+            const viewSelection = libraryDisplay.view[viewMode]
+            const viewModeType = libraryDisplay.viewType[viewMode]
+            const colourFunction = viewMap.get(viewModeType)[viewSelection].func
+            const colourScheme = viewMap.get(viewModeType)[viewSelection].scheme
+            const colourScale = colourBandscale(getColourSet.value)
+            const colourFunc = d3[colourFunction](d3[colourScheme]) //Applies colour functions and schemes from Object. Domain defaults to [0,1]
             return (
-                (value) => colourFunc(colourScale(value)) //Returns nested scale function after applying band function
-            )
-        }
-        else{
-            return (value) => {
-                return (d3[colourFunction](d3[colourScheme])
-                    .domain([0, Math.log(1000)]))(Math.log(value))
-            }
-        }
-
-        
-
-
-                    //len = viewColourSet.length
+                    (value) => colourFunc(colourScale(value)) //Returns nested scale function after applying band function (IIFE)
+                )   
+        }else{
+            return (_)=> {return '#fff281'}
+        }    
     }
 
     function colourBandscale(colourSet){
-        console.log('Array.from colourSet',Array.from(colourSet))
+        // console.log('Array.from colourSet',Array.from(colourSet))
         return d3.scaleBand()
                     .domain(Array.from(colourSet)) //Range defaults to [0,1]
     }
 
     function processColourSet(data){
-        // console.log('flatMap', data.flatMap(d=> getIDP(d, 'colour')))
-        // console.log('sort',data.flatMap(d=> getIDP(d, 'colour')).sort(alphabetically(true)))
-        // console.log('sorted set',  new Set(data.flatMap(d=> getIDP(d, 'colour')).sort(alphabetically(true))))
        return new Set(data.flatMap(d=> getIDP(d, 'colour')).sort(alphabetically(true)))
     }
 
@@ -251,9 +222,6 @@ export const useViewStore = defineStore('view', ()=>{
                 return false
             }
         })
-        // console.log('unique colours', new Set(uniqueColours.sort((a, b) => alphabetically(true)(getIDP(a, 'colour'), getIDP(b, 'colour')))))
-
-
         return  new Set(uniqueColours.sort((a, b) => alphabetically(true)(getIDP(a, 'colour'), getIDP(b, 'colour'))))
     }
 
@@ -261,13 +229,32 @@ export const useViewStore = defineStore('view', ()=>{
     //Parse Data Object from Supabase
     async function parseDatabase(tableData) {
             libraryData.value = await JSON.parse(JSON.stringify(tableData))
-            formattedLibrary.value =  formatLibrary(libraryData.value, libraryDisplay);
+            // unformattedData.value =  await JSON.parse(JSON.stringify(libraryData.value))
+            // formattedLibrary.value =  formatLibrary(libraryData.value, libraryDisplay);
     }
+
+    const dataSize = computed(() =>{
+        return  libraryData.value.length?   libraryData.value.length: 0
+    })
+
+
     //Update View Object from user input
     function handleViewSelection(viewMode, viewSelection, itemType){
         console.log('handleViewSelection', viewMode, viewSelection, itemType)
-        libraryDisplay.view[viewMode] = viewSelection; //Future addition - updateView below (in database)
-        libraryDisplay.viewType[viewMode] = itemType; //Future addition - updateViewType below (in database)
+
+        if(itemType === 'NotSelected') {
+            libraryDisplay.view[viewMode] = 'Not Selected'
+            libraryDisplay.viewType[viewMode] = 'NotSelected'
+        }else{
+            if(viewMode === 'shelf'){
+                libraryDisplay.view.shelfOrderMethod =  viewMap.get(itemType)[viewSelection].sortMethod
+            }
+            if(viewMode === 'bookend'){
+                libraryDisplay.view.bookendOrderMethod =  viewMap.get(itemType)[viewSelection].sortMethod
+            }
+            libraryDisplay.view[viewMode] = viewSelection; //Future addition - updateView below (in database)
+            libraryDisplay.viewType[viewMode] = itemType; //Future addition - updateViewType below (in database)
+        }
     }
 
     //Dynamic Path
@@ -276,15 +263,11 @@ export const useViewStore = defineStore('view', ()=>{
     function getIDP(item, viewMode) {
         let value;
         if(!item) return null
-        if(viewMode === 'not selected') return 'not selected'
+        if(viewMode === 'Not Selected') return 'Not Selected'
         const viewSelection = libraryDisplay.view[viewMode]
         const viewModeType = libraryDisplay.viewType[viewMode]
         const itemType = itemTypeCheck(item)
 
-        // console.log('item',item)
-        // console.log('hasOwnProperty: Marks', item.hasOwnProperty('Marks'))
-        // console.log('Length: Marks', item['Books'].length)
-        // console.log('item type', itemType, 'viewSelection', viewSelection, 'viewModeType', viewModeType)
         if(itemType === 'Agent'){
             //Agent Item paths
             if(viewModeType === 'Agent') value = handleObjectPath(item, viewMode, viewSelection)
@@ -302,10 +285,6 @@ export const useViewStore = defineStore('view', ()=>{
             if(viewModeType === 'Book') value = handleObjectPath(item, viewMode, 'Books', viewSelection)
         }
             return value ? value : "no data"
-        
-        //Add editor for No Value - return "No Data"
-        // var [marks, markIndex, agent]  = libraryDisplay.BookLookUp[libraryDisplay.viewType[viewMode]].split(',')
-        //     return item[marks][markIndex][agent]
     }
 
     function itemTypeCheck(item){
@@ -341,12 +320,13 @@ export const useViewStore = defineStore('view', ()=>{
 
 
       return {  libraryData,
+                dataSize,
                 libraryDisplay,
                 formattedLibrary, 
-                colourCategory,
                 heightCategory,
                 itemHeight,
-                itemColour, 
+                itemColour,
+                colourSet, 
                 viewHeightBounds, 
                 viewColourSet,
                 parseDatabase,
@@ -354,3 +334,5 @@ export const useViewStore = defineStore('view', ()=>{
                 getIDP,
                 itemTypeCheck  }
   })
+
+

@@ -84,6 +84,7 @@ const { libraryData,
         itemColour, 
         viewHeightBounds, 
         viewColourSet } = storeToRefs(viewStore)
+        
 const { parseDatabase,
         handleViewSelection,
         getIDP,

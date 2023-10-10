@@ -51,7 +51,7 @@
                     </li>
                     <li>
                         <h4>{{categoryMap.get(libraryDisplay.viewType[itemBundle.collectionProp2])[libraryDisplay.view[itemBundle.collectionProp2]]}}</h4>
-                        <p>{{ getIDP(item, itemBundle.collectionProp2) }}</p>
+                         <p>{{ getIDP(item, 'colour') }}</p>  <!-- Was itemBundle.collectionProp2 array fix required for multiple colour values -->
                     </li>
                 </ul>
                 <div class="item-view">
@@ -72,7 +72,7 @@
                         <h4>{{libraryDisplay.viewType[itemBundle.viewProp2] }}
                             |
                             {{ categoryMap.get(libraryDisplay.viewType[itemBundle.viewProp2])[libraryDisplay.view[itemBundle.viewProp2]] }}</h4>    
-                        <h3>{{ getIDP(item, itemBundle.viewProp2) }}</h3>
+                        <h3>{{ getIDP(item, 'colour') }}</h3> <!-- Was itemBundle.viewProp22 array fix required for multiple colour values -->
                     </li>
                     <li>
                         <p class="item-view-subheader-type">{{itemBundle.viewProp3}}</p>

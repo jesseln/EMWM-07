@@ -1,6 +1,10 @@
 <template>
     <div >
-        <h1 class="library-type-title">Intro to the site</h1>
+        <h1>Hello, I'm an inDex page</h1>
+
+    <NuxtPage />
+
+    
     </div>
    
     

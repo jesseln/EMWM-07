@@ -1,6 +1,6 @@
 <template>
     <div class="yourShelf-title-box">
-        <h2 class="library-title">Design Your Library View</h2>
+        <h2  class="library-type-title">Design Your Library View</h2>
         <p class="yourShelf-description">Select the options below to alter your view of the library.</p>
     </div>
     <div class="yourShelf-title-box">
@@ -9,31 +9,15 @@
     </div>
         <div class="library-display-button-wrapper">
             <div class="library-button-wrapper">
-                <button class="shelf-button library-button" @click="libraryItemDisplay('agents')" >Agents</button>
+                <button class="shelf-button library-button" @click="libraryItemDisplay('Agent')" >Agents</button>
             </div>
             <div class="library-button-wrapper">
-                <button class="shelf-button library-button" @click="libraryItemDisplay('books')" >Books</button>
+                <button class="shelf-button library-button" @click="libraryItemDisplay('Book')" >Books</button>
             </div>
                 <div class="library-button-wrapper">
-                <button class="shelf-button library-button" @click="libraryItemDisplay('marks')" >Marks</button>
+                <button class="shelf-button library-button" @click="libraryItemDisplay('Mark')" >Marks</button>
             </div>  
         </div>
-    <!-- <div class="view-wrapper">
-        <div class="view-facet-title-box">
-            <h2 class="view-facet-title">Item Labels</h2>
-            <p class="view-facet-description">Select the category to use as a label for each item.</p>
-            <ViewSelector :viewMode="'label'" :selectionList="categoryMap"/>
-        </div>
-    <div class="shelf-inner">
-        <div class="view-section-wrapper" >
-                <div class="section-inner" v-for="item in viewHeightBounds" :style="{ height: scales.maxShelfHeight + 'px'}">
-                    <AgentItem v-if="itemTypeCheck(item) === 'Agent'" :item="item" :itemBundle="viewEditItemBundle.agents"/>
-                    <BookItem v-if="itemTypeCheck(item) === 'Book'" :item="item" :itemBundle="viewEditItemBundle.books"/>
-                    <MarkItem v-if="itemTypeCheck(item) === 'Mark'" :item="item" :itemBundle="viewEditItemBundle.marks"/>
-                </div>
-        </div>
-    </div>
-</div> -->
 <div class="view-top-section-wrapper">
     <div class="view-wrapper">
         <div class="view-facet-title-box">
@@ -52,9 +36,9 @@
                     </div>
                 </div>
                     <div class="section-inner" v-for="item in viewHeightBounds" :key="JSON.stringify(item)" :style="{ height: scales.maxShelfHeight + 'px'}">
-                        <AgentItem v-if="itemTypeCheck(item) === 'Agent'" :item="item" :itemBundle="viewEditItemBundle.agents"/>
-                        <BookItem v-if="itemTypeCheck(item) === 'Book'" :item="item" :itemBundle="viewEditItemBundle.books"/>
-                        <MarkItem v-if="itemTypeCheck(item) === 'Mark'" :item="item" :itemBundle="viewEditItemBundle.marks"/>
+                        <AgentItem v-if="itemTypeCheck(item) === 'Agent'" :item="item" :itemBundle="viewEditItemBundle.Agent"/>
+                        <BookItem v-if="itemTypeCheck(item) === 'Book'" :item="item" :itemBundle="viewEditItemBundle.Book"/>
+                        <MarkItem v-if="itemTypeCheck(item) === 'Mark'" :item="item" :itemBundle="viewEditItemBundle.Mark"/>
                     </div>
                     <div class="view-section-title-box-rhs" :style="{ height: scales.maxShelfHeight + 'px'}">
                     <h3 class="view-section-category">Highest Value </h3>
@@ -75,9 +59,9 @@
         <div class="shelf-inner">
             <div class="view-section-wrapper" >
                     <div class="section-inner" v-for="item in viewHeightBounds" :key="JSON.stringify(item)" :style="{ height: scales.maxShelfHeight + 'px'}">
-                        <AgentItem v-if="itemTypeCheck(item) === 'Agent'" :item="item" :itemBundle="viewEditItemBundle.agents"/>
-                        <BookItem v-if="itemTypeCheck(item) === 'Book'" :item="item" :itemBundle="viewEditItemBundle.books"/>
-                        <MarkItem v-if="itemTypeCheck(item) === 'Mark'" :item="item" :itemBundle="viewEditItemBundle.marks"/>
+                        <AgentItem v-if="itemTypeCheck(item) === 'Agent'" :item="item" :itemBundle="viewEditItemBundle.Agent"/>
+                        <BookItem v-if="itemTypeCheck(item) === 'Book'" :item="item" :itemBundle="viewEditItemBundle.Book"/>
+                        <MarkItem v-if="itemTypeCheck(item) === 'Mark'" :item="item" :itemBundle="viewEditItemBundle.Mark"/>
                     </div>
             </div>
         </div>
@@ -92,9 +76,9 @@
         <div class="shelf-inner">
             <div class="view-section-wrapper" >
                     <div class="section-inner" v-for="item in viewHeightBounds" :key="JSON.stringify(item)" :style="{ height: scales.maxShelfHeight + 'px'}">
-                        <AgentItem v-if="itemTypeCheck(item) === 'Agent'" :item="item" :itemBundle="viewEditItemBundle.agents"/>
-                        <BookItem v-if="itemTypeCheck(item) === 'Book'" :item="item" :itemBundle="viewEditItemBundle.books"/>
-                        <MarkItem v-if="itemTypeCheck(item) === 'Mark'" :item="item" :itemBundle="viewEditItemBundle.marks"/>
+                        <AgentItem v-if="itemTypeCheck(item) === 'Agent'" :item="item" :itemBundle="viewEditItemBundle.Agent"/>
+                        <BookItem v-if="itemTypeCheck(item) === 'Book'" :item="item" :itemBundle="viewEditItemBundle.Book"/>
+                        <MarkItem v-if="itemTypeCheck(item) === 'Mark'" :item="item" :itemBundle="viewEditItemBundle.Mark"/>
                     </div>
             </div>
         </div>
@@ -116,9 +100,9 @@
                 </div>
             </div>
                 <div class="section-inner" v-for="item in  viewColourSet" :key="JSON.stringify(item)" :style="{ height: scales.maxShelfHeight + 'px'}">
-                    <AgentItem v-if="itemTypeCheck(item) === 'Agent'" :item="item" :itemBundle="viewColourItemBundle.agents"/>
-                    <BookItem v-if="itemTypeCheck(item) === 'Book'" :item="item" :itemBundle="viewColourItemBundle.books"/>
-                    <MarkItem v-if="itemTypeCheck(item) === 'Mark'" :item="item" :itemBundle="viewColourItemBundle.marks"/>
+                    <AgentItem v-if="itemTypeCheck(item) === 'Agent'" :item="item" :itemBundle="viewColourItemBundle.Agent"/>
+                    <BookItem v-if="itemTypeCheck(item) === 'Book'" :item="item" :itemBundle="viewColourItemBundle.Book"/>
+                    <MarkItem v-if="itemTypeCheck(item) === 'Mark'" :item="item" :itemBundle="viewColourItemBundle.Mark"/>
                 </div>
         </div>
     </div>

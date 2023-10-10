@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Find Annotations</h1>
+        <h1 class="library-type-title">Find Annotations</h1>
     </div>
 </template>
 
