@@ -1,0 +1,1 @@
+import{a0 as n,a1 as o,R as i}from"./entry.de7ae5fc.js";const r=()=>{var t;const e=i(),a=n(),s=a.value?`Bearer ${a.value}`:void 0,u=((t=e._supabaseClient)==null?void 0:t.headers.Authorization)!==s;return(!e._supabaseClient||u)&&(e._supabaseClient=o()),e._supabaseAuthClient};export{r as u};

@@ -1,0 +1,1 @@
+import{_ as e,c as t,o,a as s}from"./entry.de7ae5fc.js";const c={},n=s("h1",{class:"library-type-title"},"Intro to the site",-1),r=[n];function a(_,i){return o(),t("div",null,r)}const d=e(c,[["render",a]]);export{d as default};

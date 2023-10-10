@@ -1,0 +1,1 @@
+import{_ as e,c as t,o,a as c}from"./entry.de7ae5fc.js";const s={},a=c("h1",{class:"library-type-title"},"About the Collection",-1),n=[a];function r(_,l){return o(),t("div",null,n)}const d=e(s,[["render",r]]);export{d as default};
